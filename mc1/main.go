@@ -1,21 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/wugalde19/pratik/mc1/lib/endpoints"
 	"goji.io"
-	"goji.io/pat"
 )
-
-func hello(w http.ResponseWriter, r *http.Request) {
-	name := pat.Param(r, "name")
-	fmt.Fprintf(w, "Hello, %s!", name)
-}
 
 func main() {
 	mux := goji.NewMux()
-	mux.HandleFunc(pat.Get("/hello/:name"), hello)
+
+	endpoints.RegisterAll(mux)
 
 	http.ListenAndServe("localhost:8000", mux)
 }
