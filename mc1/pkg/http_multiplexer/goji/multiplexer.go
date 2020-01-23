@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	goji "goji.io"
+	"goji.io/pat"
 
 	"github.com/wugalde19/pratik/mc1/pkg/http_multiplexer"
 )
@@ -25,6 +26,11 @@ func New(host string, port int) http_multiplexer.IMultiplexer {
 		mux:  goji.NewMux(),
 		port: port,
 	}
+}
+
+// Post will register an endpoint to handle the "POST" HTTP verb.
+func (m *multiplexer) Post(endpoint string, handler func(http.ResponseWriter, *http.Request)) {
+	m.mux.HandleFunc(pat.Post(endpoint), handler)
 }
 
 // Serve will begin servicing requests.
