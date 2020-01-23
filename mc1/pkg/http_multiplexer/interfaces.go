@@ -11,4 +11,7 @@ type IMultiplexer interface {
 
 	// Serve listens on the port number and calls ServeHTTP to handle incoming requests.
 	Serve()
+
+	// Use appends a middleware to the middleware stack.
+	Use(middleware func(http.Handler) http.Handler)
 }

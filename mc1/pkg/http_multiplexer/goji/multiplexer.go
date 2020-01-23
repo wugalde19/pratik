@@ -42,6 +42,11 @@ func (m *multiplexer) Serve() {
 	}
 }
 
+// Use appends a middleware to the middleware stack.
+func (m *multiplexer) Use(middleware func(http.Handler) http.Handler) {
+	m.mux.Use(middleware)
+}
+
 func (m *multiplexer) initialize() {
 	m.server = &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", m.host, m.port),
