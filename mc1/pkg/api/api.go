@@ -25,6 +25,9 @@ func Start(cfg *config.Config) {
 
 	mux.Use(jwt.MWFunc)
 
+	token, _, _ := jwt.GenerateToken()
+	fmt.Println(token)
+
 	srv := server.New(mux)
 	srv.Serve()
 }
