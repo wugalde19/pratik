@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/wugalde19/pratik/mc1/pkg/http_multiplexer"
 )
 
-func RegistrationHandler(mux http_multiplexer.IMultiplexer) func(http.ResponseWriter, *http.Request) {
+func RegistrationHandler(routesMng RoutesManager) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 
@@ -18,9 +16,9 @@ func RegistrationHandler(mux http_multiplexer.IMultiplexer) func(http.ResponseWr
 			return
 		}
 
-		body := RequestBody{}
+		model := RegistrationModel{}
 		decoder := json.NewDecoder(r.Body)
-		if err := decoder.Decode(&body); err != nil {
+		if err := decoder.Decode(&model); err != nil {
 			fmt.Fprint(w, "unable to decode request body")
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -28,6 +26,6 @@ func RegistrationHandler(mux http_multiplexer.IMultiplexer) func(http.ResponseWr
 
 		defer r.Body.Close()
 
-		fmt.Fprintf(w, "%s has been successfully registered!", body.Name)
+		routesMng.service.createRegistration(model)
 	}
 }

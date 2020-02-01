@@ -1,7 +1,9 @@
 package api
 
 import (
+	"database/sql"
 	"fmt"
+
 	"github.com/wugalde19/pratik/mc1/config"
 	"github.com/wugalde19/pratik/mc1/pkg/db/postgres"
 	"github.com/wugalde19/pratik/mc1/pkg/middleware/jwt"
@@ -12,12 +14,10 @@ import (
 	"github.com/wugalde19/pratik/mc1/pkg/server"
 )
 
-type registerRoutesFn func(http_multiplexer.IMultiplexer)
+type registerRoutesFn func(http_multiplexer.IMultiplexer, *sql.DB)
 
 func Start(cfg *config.Config) {
 	mux := gojimultiplexer.New(cfg.Server.Host, cfg.Server.Port)
-
-	registerRoutes(mux, registration.AllRoutes)
 
 	jwt, err := jwt.New(cfg.JWT.SigningKeyEnv, cfg.JWT.SigningAlgorithm, cfg.JWT.Duration)
 	if err != nil {
@@ -34,18 +34,24 @@ func Start(cfg *config.Config) {
 		panic(fmt.Errorf("problem occured while creating database. %s", err.Error()))
 	}
 
-	_, err = database.Connect()
+	dbConnection, err := database.Connect()
 	if err != nil {
 		panic(fmt.Errorf("problem occured while connecting to database. %s", err.Error()))
 	}
+
+	registerRoutes(mux, dbConnection, registration.AllRoutes)
 
 	srv := server.New(mux)
 	srv.Serve()
 
 }
 
-func registerRoutes(mux http_multiplexer.IMultiplexer, funcs ...registerRoutesFn) {
+func registerRoutes(
+	mux http_multiplexer.IMultiplexer,
+	dbConnection *sql.DB,
+	funcs ...registerRoutesFn,
+) {
 	for _, function := range funcs {
-		function(mux)
+		function(mux, dbConnection)
 	}
 }
