@@ -9,8 +9,9 @@ import (
 
 // Config holds data of configuration file
 type Config struct {
-	Server *Server `yaml:"server"`
-	JWT    *JWT    `yaml:"jwt"`
+  Server  *Server `yaml:"server"`
+  DB      *DB     `yaml:"db"`
+  JWT     *JWT    `yaml:"jwt"`
 }
 
 // Load returns a *Config with all the configuration data

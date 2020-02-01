@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/wugalde19/pratik/mc1/config"
+	"github.com/wugalde19/pratik/mc1/pkg/db/postgres"
 	"github.com/wugalde19/pratik/mc1/pkg/middleware/jwt"
 
 	"github.com/wugalde19/pratik/mc1/pkg/api/registration"
@@ -28,8 +29,19 @@ func Start(cfg *config.Config) {
 	token, _, _ := jwt.GenerateToken()
 	fmt.Println(token)
 
+	database, err := postgres.NewDatabase(cfg.DB)
+	if err != nil {
+		panic(fmt.Errorf("problem occured while creating database. %s", err.Error()))
+	}
+
+	_, err = database.Connect()
+	if err != nil {
+		panic(fmt.Errorf("problem occured while connecting to database. %s", err.Error()))
+	}
+
 	srv := server.New(mux)
 	srv.Serve()
+
 }
 
 func registerRoutes(mux http_multiplexer.IMultiplexer, funcs ...registerRoutesFn) {

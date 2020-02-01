@@ -1,0 +1,16 @@
+server:
+  port: 8000
+  host: localhost
+
+db:
+  host: localhost
+  port: 5432
+  user: pratik
+  password: DB_PASS_ENV
+  db_name: test
+
+jwt:
+  duration_minutes: 15
+  refresh_duration_minutes: 15
+  signing_algorithm: HS256
+  signing_key_env: SIGNING_KEY_ENV
