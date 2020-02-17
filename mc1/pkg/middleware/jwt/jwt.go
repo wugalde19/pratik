@@ -11,9 +11,10 @@ import (
 )
 
 type JWTService struct {
-	algorithm jwt.SigningMethod
-	duration time.Duration
-	secretKey []byte
+	algorithm       jwt.SigningMethod
+	duration        time.Duration
+	publicRoutesMap map[string]bool
+	secretKey       []byte
 }
 
 func New(signingKeyEnv string, algorithm string, duration int) (*JWTService, error) {
@@ -28,9 +29,10 @@ func New(signingKeyEnv string, algorithm string, duration int) (*JWTService, err
 	}
 
 	return &JWTService{
-		algorithm: signingMethod,
-		duration:  time.Duration(duration) * time.Minute,
-		secretKey: []byte(secretKey),
+		algorithm:       signingMethod,
+		duration:        time.Duration(duration) * time.Minute,
+		publicRoutesMap: publicRoutesMap(),
+		secretKey:       []byte(secretKey),
 	}, nil
 }
 
@@ -52,6 +54,11 @@ func (j *JWTService) GenerateToken() (string, string, error) {
 // MWFunc makes JWT implement the Middleware interface.
 func (j *JWTService) MWFunc(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if isPublic := j.publicRoutesMap[r.RequestURI]; isPublic {
+			h.ServeHTTP(w, r)
+			return
+		}
+
 		token, err := j.ParseToken(r)
 		if err != nil || !token.Valid {
 			w.WriteHeader(http.StatusForbidden)
@@ -85,4 +92,11 @@ func (j *JWTService) tokenParserFunc(token *jwt.Token) (interface{}, error) {
 	}
 
 	return j.secretKey, nil
+}
+
+func publicRoutesMap() map[string]bool {
+	return map[string]bool{
+		"/v1/login/":        true,
+		"/v1/registration/": true,
+	}
 }

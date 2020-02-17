@@ -24,6 +24,6 @@ func (rm *RegistrationModel) Create(dbConnection *sql.DB) {
 		return
 	}
 
-	fmt.Printf("%s has been successfully registered!", rm.Name)
+	fmt.Printf("%s has been successfully registered!\n", rm.Name)
 
 }

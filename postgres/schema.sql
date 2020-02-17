@@ -1,4 +1,4 @@
-CREATE SCHEMA AUTHORIZATION pratik;
+CREATE SCHEMA pratik;
 
 CREATE TABLE users (
    user_id serial PRIMARY KEY,
@@ -8,6 +8,8 @@ CREATE TABLE users (
    email VARCHAR (100) UNIQUE NOT NULL,
    created_at TIMESTAMP NOT NULL
 );
+
+ALTER TABLE users SET SCHEMA pratik;
 
 
 -- Enables pgcrypto to be used when encrypting password
@@ -35,3 +37,24 @@ BEGIN
 
 END;
 $$;
+
+-- Procedure to check if user exists in DB
+CREATE OR REPLACE FUNCTION loginUser(
+  pNumber VARCHAR (20),
+  pPass VARCHAR (60)
+)
+RETURNS VARCHAR (150) AS $$
+DECLARE userName VARCHAR (150);
+BEGIN
+  SELECT
+    users.name
+  INTO
+    userName
+  FROM
+    users
+  WHERE
+    mobile_number = pNumber AND password = crypt(pPass, password);
+
+  RETURN userName;
+END;
+$$  LANGUAGE plpgsql

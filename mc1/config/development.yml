@@ -7,7 +7,7 @@ db:
   port: 5432
   user: pratik
   password: DB_PASS_ENV
-  db_name: test
+  db_name: pratikdb
 
 jwt:
   duration_minutes: 15

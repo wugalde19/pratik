@@ -11,7 +11,7 @@ CALL registerUser('Name2', '456456456', 'secret2', 'email2@gmail.com');
 SELECT * FROM users WHERE password = crypt('secret', password);
 
 <!-- Access to Postgres running container using the terminal -->
-docker exec -it pg-docker psql -h localhost -p 5432 -U pratik test
+docker exec -it pg-docker psql -h localhost -p 5432 -U pratik pratikdb
 
 <!-- Create user -->
 SELECT * FROM users;
