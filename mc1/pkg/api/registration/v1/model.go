@@ -27,3 +27,8 @@ func (rm *RegistrationModel) Create(dbConnection *sql.DB) {
 	fmt.Printf("%s has been successfully registered!\n", rm.Name)
 
 }
+
+// Checks if user alredy registered with
+func (rm *RegistrationModel) FindUserByEmail(dbConnection *sql.DB, value string) *sql.Row {
+	return dbConnection.QueryRow("SELECT name FROM users WHERE email = $1", value)
+}

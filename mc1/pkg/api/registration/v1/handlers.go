@@ -26,6 +26,13 @@ func RegistrationHandler(routesMng RoutesManager) func(http.ResponseWriter, *htt
 
 		defer r.Body.Close()
 
-		routesMng.service.createRegistration(model)
+		if err := routesMng.service.createRegistration(model); err != nil {
+			fmt.Fprint(w, fmt.Sprintf("unable to register user: %s", err.Error()))
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, fmt.Sprintf("User %s succesfully created.", model.Name))
 	}
 }
