@@ -28,6 +28,11 @@ func New(host string, port int) http_multiplexer.IMultiplexer {
 	}
 }
 
+// Get will register an endpoint to handle the "GET" HTTP verb.
+func (m *multiplexer) Get(endpoint string, handler func(http.ResponseWriter, *http.Request)) {
+	m.mux.HandleFunc(pat.Get(endpoint), handler)
+}
+
 // Post will register an endpoint to handle the "POST" HTTP verb.
 func (m *multiplexer) Post(endpoint string, handler func(http.ResponseWriter, *http.Request)) {
 	m.mux.HandleFunc(pat.Post(endpoint), handler)

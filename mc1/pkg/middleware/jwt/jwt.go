@@ -37,13 +37,16 @@ func New(signingKeyEnv string, algorithm string, duration int) (*JWTService, err
 }
 
 // GenerateToken generates new JWT token
-func (j *JWTService) GenerateToken() (string, string, error) {
+func (j *JWTService) GenerateToken(email string) (string, string, error) {
 	expire := time.Now().Add(j.duration)
 
-	token := jwt.NewWithClaims((j.algorithm), jwt.MapClaims{
-		"authorized": true,
-		"user":       "Pratik",
-		"exp":        expire.Unix(),
+	token := jwt.NewWithClaims((j.algorithm), CustomMapClaims{
+		email,
+		jwt.MapClaims{
+			"authorized": true,
+			"user":       "Pratik",
+			"exp":        expire.Unix(),
+		},
 	})
 
 	tokenString, err := token.SignedString(j.secretKey)
@@ -78,7 +81,11 @@ func (j *JWTService) ParseToken(r *http.Request) (*jwt.Token, error) {
 		return nil, errors.New("authorization header is missing")
 	}
 
-	token, err := jwt.Parse(headerTokenValue[0], j.tokenParserFunc)
+	token, err := jwt.ParseWithClaims(
+		headerTokenValue[0],
+		&CustomMapClaims{},
+		j.tokenParserFunc,
+	)
 	if err != nil {
 		return nil, errors.New("unable to parse token")
 	}

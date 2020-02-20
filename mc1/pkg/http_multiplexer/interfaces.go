@@ -6,6 +6,9 @@ import (
 
 // IMultiplexer is a HTTP multiplexer/router.
 type IMultiplexer interface {
+	// Get will register an endpoint to handle the "GET" HTTP verb.
+	Get(string, func(http.ResponseWriter, *http.Request))
+
 	// Post will register an endpoint to handle the "POST" HTTP verb.
 	Post(string, func(http.ResponseWriter, *http.Request))
 

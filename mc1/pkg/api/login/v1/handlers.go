@@ -32,15 +32,15 @@ func LoginHandler(
 
 		defer r.Body.Close()
 
-		msg, err := routesMng.service.executeLogin(loginData)
-
+		email, err := routesMng.service.executeLogin(loginData)
 		if err != nil {
 			response := LoginResponse{Message: err.Error()}
 			generateResponse(w, response, http.StatusBadRequest)
 			return
 		}
 
-		token, _, _ := jwt.GenerateToken()
+		token, _, _ := jwt.GenerateToken(email)
+		msg := fmt.Sprintf("valid credentials for %s", email)
 		response := LoginResponse{Message: msg, Token: token}
 		generateResponse(w, response, http.StatusOK)
 	}

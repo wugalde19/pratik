@@ -44,17 +44,17 @@ CREATE OR REPLACE FUNCTION loginUser(
   pPass VARCHAR (60)
 )
 RETURNS VARCHAR (150) AS $$
-DECLARE userName VARCHAR (150);
+DECLARE userEmail VARCHAR (100);
 BEGIN
   SELECT
-    users.name
+    users.email
   INTO
-    userName
+    userEmail
   FROM
     users
   WHERE
     mobile_number = pNumber AND password = crypt(pPass, password);
 
-  RETURN userName;
+  RETURN userEmail;
 END;
 $$  LANGUAGE plpgsql

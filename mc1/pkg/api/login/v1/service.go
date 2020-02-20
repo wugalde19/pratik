@@ -27,10 +27,11 @@ func (s *Service) executeLogin(data LoginData) (string, error) {
 		return "", fmt.Errorf(msg, err.Error())
 	}
 
-	var name *string
+	defer rows.Close()
 
+	var email *string
 	for rows.Next() {
-		err = rows.Scan(&name)
+		err = rows.Scan(&email)
 		if err != nil {
 			msg := "an error occurred when scanning rows in executeLogin: %s %#v\n"
 			return "", fmt.Errorf(msg, err.Error(), rows)
@@ -43,9 +44,9 @@ func (s *Service) executeLogin(data LoginData) (string, error) {
 		return "", fmt.Errorf(msg, err.Error())
 	}
 
-	if name == nil {
+	if email == nil {
 		return "", errors.New("Invalid credentials. Not user found with those credentials")
 	}
 
-	return fmt.Sprintf("valid credentials for %s", *name), nil
+	return *email, nil
 }

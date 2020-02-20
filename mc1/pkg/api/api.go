@@ -7,6 +7,7 @@ import (
 	"github.com/wugalde19/pratik/mc1/config"
 	"github.com/wugalde19/pratik/mc1/pkg/api/login"
 	"github.com/wugalde19/pratik/mc1/pkg/api/registration"
+	"github.com/wugalde19/pratik/mc1/pkg/api/user"
 	"github.com/wugalde19/pratik/mc1/pkg/db/postgres"
 	"github.com/wugalde19/pratik/mc1/pkg/middleware/jwt"
 
@@ -36,12 +37,21 @@ func Start(cfg *config.Config) {
 	}
 
 	registerPublicRoutes(mux, dbConnection, *jwt)
+	registerPrivateRoutes(mux, dbConnection, *jwt)
 
 	mux.Use(jwt.MWFunc)
 
 	srv := server.New(mux)
 	srv.Serve()
 
+}
+
+func registerPrivateRoutes(
+	mux http_multiplexer.IMultiplexer,
+	dbConnection *sql.DB,
+	jwt jwt.JWTService,
+) {
+	user.AllRoutes(mux, dbConnection, jwt)
 }
 
 func registerPublicRoutes(
