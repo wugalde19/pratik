@@ -1,8 +1,8 @@
-<!-- Build docker image -->
-docker build . --build-arg db_pass_env=${DB_PASS_ENV} -t postgres
+* COMMANDS TO RUN THE APP USING DOCKER (LOCAL ENV)
+- docker build . --build-arg db_pass_env=${DB_PASS_ENV} -t postgres
+- docker run --rm --name pg-docker -p 5432:5432 postgres:latest
 
-<!-- Run container on port 5432 -->
-docker run --rm --name pg-docker -p 5432:5432 postgres:latest
+* POSTGRES RELATED
 
 <!-- From a Postgres UI (like PSequel) -->
 SELECT * FROM users;
