@@ -1,12 +1,15 @@
 package api
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/wugalde19/pratik/mc2/config"
+	"github.com/wugalde19/pratik/mc2/pkg/api/user"
 	"github.com/wugalde19/pratik/mc2/pkg/db/postgres"
 	"github.com/wugalde19/pratik/mc2/pkg/middleware/jwt"
 
+	"github.com/wugalde19/pratik/mc2/pkg/http_multiplexer"
 	gojimultiplexer "github.com/wugalde19/pratik/mc2/pkg/http_multiplexer/goji"
 	"github.com/wugalde19/pratik/mc2/pkg/server"
 )
@@ -29,9 +32,19 @@ func Start(cfg *config.Config) {
 		panic(fmt.Errorf("problem occured while creating JWT middleware. %s", err.Error()))
 	}
 
+	registerPrivateRoutes(mux, dbConnection, *jwt)
+
 	mux.Use(jwt.MWFunc)
 
 	srv := server.New(mux)
 	srv.Serve()
 
+}
+
+func registerPrivateRoutes(
+	mux http_multiplexer.IMultiplexer,
+	dbConnection *sql.DB,
+	jwt jwt.JWTService,
+) {
+	user.AllRoutes(mux, dbConnection, jwt)
 }
