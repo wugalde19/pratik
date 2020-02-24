@@ -57,4 +57,19 @@ BEGIN
 
   RETURN userEmail;
 END;
-$$  LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;
+
+-- Procedure to update the user's password
+CREATE OR REPLACE PROCEDURE UpdatePassword(
+  pUserId INTEGER,
+  pNewPass VARCHAR (60)
+) LANGUAGE plpgsql
+AS $$
+BEGIN
+
+  UPDATE users
+  SET password = crypt(pNewPass, gen_salt('bf'))
+  WHERE user_id = pUserId;
+
+END;
+$$;

@@ -20,9 +20,15 @@ func Routes(
 
 	routesMng := RoutesManager{jwt, service, mux}
 
-	// ------ User
+	// ------ Update Password
+	// Version: 1
+	// HTTP Verb: POST
+	// Handler Func Name: UpdatePasswordHandler
+	mux.Post("/v1/user/update-password", UpdatePasswordHandler(routesMng))
+
+	// ------ Get Total Registered User Count
 	// Version: 1
 	// HTTP Verb: GET
-	// Handler Func Name: UserHandler
-	mux.Get("/v1/user/count", UserHandler(routesMng))
+	// Handler Func Name: UserCountHandler
+	mux.Get("/v1/user/count", UserCountHandler(routesMng))
 }
