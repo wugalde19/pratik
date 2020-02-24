@@ -1,9 +1,9 @@
 server:
   port: 8001
-  host: localhost
+  host: 0.0.0.0
 
 db:
-  host: localhost
+  host: pg-docker
   port: 5432
   user: pratik
   password: DB_PASS_ENV
