@@ -12,14 +12,14 @@ import (
 	"github.com/wugalde19/pratik/mc1/pkg/middleware/jwt"
 
 	"github.com/wugalde19/pratik/mc1/pkg/http_multiplexer"
-	gojimultiplexer "github.com/wugalde19/pratik/mc1/pkg/http_multiplexer/goji"
+	gorillamultiplexer "github.com/wugalde19/pratik/mc1/pkg/http_multiplexer/gorilla"
 	"github.com/wugalde19/pratik/mc1/pkg/server"
 )
 
 type registerRoutesFn func(http_multiplexer.IMultiplexer, *sql.DB)
 
 func Start(cfg *config.Config) {
-	mux := gojimultiplexer.New(cfg.Server.Host, cfg.Server.Port)
+	mux := gorillamultiplexer.New(cfg.Server.Host, cfg.Server.Port)
 
 	database, err := postgres.NewDatabase(cfg.DB)
 	if err != nil {
