@@ -1,8 +1,16 @@
-* COMMANDS TO RUN THE APP USING DOCKER (LOCAL ENV)
+### COMMANDS TO RUN THE APP USING DOCKER (LOCAL ENV)
+```
 - docker build . --build-arg db_pass_env=${DB_PASS_ENV} -t postgres
 - docker run --rm --name pg-docker -p 5432:5432 postgres:latest
+```
 
-* POSTGRES RELATED
+If you want to run the container using a network you'll need to run
+the following command
+```
+- docker run --rm --name pg-docker -p 5432:5432 --network myNetwork postgres:latest
+```
+
+### POSTGRES RELATED
 
 <!-- From a Postgres UI (like PSequel) -->
 SELECT * FROM users;
